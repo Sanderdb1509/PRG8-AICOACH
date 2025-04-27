@@ -23,8 +23,21 @@ if (!fs.existsSync('uploads')) {
 }
 
 const app = express();
+
+// CORS instellen voor productie (Netlify URL) en lokaal
+const allowedOrigins = [
+    'http://localhost:3000', // Voor lokaal ontwikkelen
+    'https://aicoach-prg8.netlify.app' // !! VERVANG INDIEN NODIG met je ECHTE Netlify URL !!
+];
 app.use(cors({
-  origin: "http://localhost:3000"
+  origin: function (origin, callback) {
+    // Sta requests zonder origin toe (bv. Postman, server-naar-server) of van toegestane origins
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 
 app.use(bodyParser.json()); 
@@ -400,7 +413,8 @@ app.post("/upload-document", upload.single('documentFile'), async (req, res) => 
     }
 });
 
-const port = 8060;
+// Gebruik Render's PORT of fallback naar 8060
+const port = process.env.PORT || 8060;
 app.listen(port, () => {
-  console.log(`Server is listening at http://localhost:${port}`);
+  console.log(`Server is listening at http://localhost:${port}`); // Deze log is voor lokaal, op Render luistert hij op de gegeven poort
 });
