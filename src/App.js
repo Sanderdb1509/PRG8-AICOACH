@@ -10,6 +10,9 @@ import EndoImage from './images/endomorph.png';
 import { Edit2, Trash2, Mic, MicOff, Send, Paperclip, UploadCloud } from 'react-feather';
 import './App.css';
 
+// Base URL voor de backend API
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8060';
+
 // Functie om chats uit localStorage te laden
 const loadChatsFromLocalStorage = () => {
   const savedChats = localStorage.getItem('aiCoachChats');
@@ -135,7 +138,7 @@ function App() {
     };
 
     // Verstuur als JSON - Dit deel wordt aangepast
-    axios.post('http://localhost:8060/chat', requestData, {
+    axios.post(`${API_BASE_URL}/chat`, requestData, {
       headers: {
         'Content-Type': 'application/json'
       }
@@ -279,7 +282,7 @@ function App() {
     }
 
     try {
-        const response = await fetch("http://localhost:8060/chat", { // Use fetch
+        const response = await fetch(`${API_BASE_URL}/chat`, {
             method: 'POST',
             body: formData, // Send FormData
             // Headers are set automatically by fetch for FormData
@@ -371,7 +374,7 @@ function App() {
     formData.append('documentFile', fileToUpload); // Key moet matchen met backend!
 
     try {
-        const response = await fetch("http://localhost:8060/upload-document", {
+        const response = await fetch(`${API_BASE_URL}/upload-document`, {
             method: 'POST',
             body: formData,
         });
