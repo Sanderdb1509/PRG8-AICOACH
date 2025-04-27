@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from 'react-markdown';
 import AppLogo from './logo.png';
@@ -83,7 +83,7 @@ function App() {
   // Effect to scroll to bottom when chat history updates
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatHistory]); // Dependency: chatHistory of the current chat
+  }, [currentChat?.history]); // Gebruik currentChat.history als dependency
 
   // Helper functie om slider waarde om te zetten naar tekst
   const formatTimeline = (months) => {
