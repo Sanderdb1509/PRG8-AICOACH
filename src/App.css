@@ -1,38 +1,788 @@
-.App {
+body {
+    padding: 0;
+    margin: 0;
+    background-color: #1E2025;
+    color: #fff;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.app-logo {
+    display: block;
+    margin: 10px auto 20px auto;
+    max-width: 50px;
+}
+
+.wrapper form img{
+    max-width:40px;
+}
+
+.wrapper form input{
+    background-color: #000;
+    color: greenyellow;
+    border: 1px solid #005167;
+    font-size: 22px;
+    padding: 10px 15px;
+    flex: 1;
+    border-radius: 4px;
+}
+.wrapper form button{
+    border: 1px solid #000000;
+    font-size: 22px;
+    padding: 10px 20px;
+    background-color: #61DAFB;
+    color: #000000;
+    cursor: pointer;
+    border-radius: 4px;
+}
+.wrapper form button:hover{
+    opacity: 0.8;
+}
+.response-area{
+    font-size: 20px;
+    max-width: 1100px;
+    display: block;
+    margin: 50px auto 0 auto;
+}
+.footer {
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin: 20px 0 10px 0;
+    opacity: 0.5;
+    text-align: center;
+}
+.cg-logo.loading{
+    animation: rotation 2s infinite linear;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to{
+        transform: rotate(359deg);
+    }
+}
+
+/* Chat Container (berichten) */
+.chat-container {
+  flex-grow: 1;
+  /* Ensure flex column layout for messages */
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Spacing between bubbles */
+  padding: 10px 0; /* Padding top/bottom within the scrollable wrapper */
+}
+
+/* General message bubble style */
+.message {
+  padding: 10px 15px;
+  border-radius: 18px; /* Rounded corners */
+  max-width: 75%; /* Limit bubble width */
+  word-wrap: break-word; /* Wrap long words */
+  line-height: 1.4;
+}
+
+/* AI message specific style */
+.message.ai {
+  background-color: #2a2f34; /* Darker grey background */
+  color: #e1e3e5;
+  align-self: flex-start; /* Align AI messages to the left */
+  border-bottom-left-radius: 4px; /* Slightly different corner for tail effect */
+}
+
+/* User message specific style */
+.message.user {
+  background-color: #005C4B; /* WhatsApp-like green */
+  color: #fff;
+  align-self: flex-end; /* Align User messages to the right */
+  border-bottom-right-radius: 4px; /* Slightly different corner for tail effect */
+}
+
+/* Styles for content WITHIN the bubble */
+.markdown-content p:first-of-type {
+    margin-top: 0;
+}
+.markdown-content p:last-of-type {
+    margin-bottom: 0;
+}
+.markdown-content ul,
+.markdown-content ol {
+    padding-left: 20px;
+}
+/* Add more specific markdown element styling as needed */
+
+/* Input Formulier */
+.input-form {
+  position: absolute; /* Position absolutely within chat-area */
+  bottom: 20px; /* Distance from bottom */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  width: calc(100% - 40px); /* Full width minus padding */
+  max-width: 860px; /* Slightly less than chat-wrapper max-width */
+  z-index: 10; /* Ensure it's above chat messages */
+  
+  /* Remove margin-top, border-top might not be needed */
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none; 
+}
+
+/* Wrapper voor textarea en knoppen */
+.input-area-wrapper {
+  display: flex;
+  align-items: flex-end; 
+  background-color: #2a2f34;
+  padding: 8px 12px;
+  border-radius: 25px; 
+  
+  animation: rainbowGlow 5s linear infinite;
+  box-shadow: 0 0 15px 5px red; 
+}
+
+/* Nieuwe keyframes voor box-shadow animatie */
+@keyframes rainbowGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px 5px red;
+  }
+  16% {
+    box-shadow: 0 0 15px 5px orange;
+  }
+  33% {
+    box-shadow: 0 0 15px 5px yellow;
+  }
+  50% {
+    box-shadow: 0 0 15px 5px lime;
+  }
+  66% {
+    box-shadow: 0 0 15px 5px cyan;
+  }
+  83% {
+    box-shadow: 0 0 15px 5px violet;
+  }
+}
+
+.input-form textarea {
+  flex-grow: 1; 
+  background-color: transparent; 
+  border: none;
+  color: #fff;
+  padding: 8px 10px;
+  margin-right: 8px; 
+  resize: none; 
+  font-family: inherit; 
+  font-size: 15px; 
+  min-height: 24px; 
+  max-height: 120px; 
+  overflow-y: auto; 
+  outline: none; 
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.input-area-wrapper button,
+.input-area-wrapper label.file-upload-button {
+  background: none;
+  border: none;
+  color: #aebac1;
+  cursor: pointer;
+  padding: 6px;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.input-area-wrapper button:hover,
+.input-area-wrapper label.file-upload-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.input-area-wrapper button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: transparent !important;
+}
+
+/* Specifieke mic button styling */
+.mic-button.listening {
+  background-color: rgba(255, 77, 79, 0.2); /* Rode achtergrond tijdens luisteren */
+  color: #ff4d4f; /* Rood icoon */
+}
+
+.mic-button.listening:hover {
+  background-color: rgba(255, 77, 79, 0.3); /* Iets donkerder rood op hover */
+}
+
+/* Geselecteerde bestandsnaam */
+.selected-file-name {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 5px;
+  text-align: left;
+  margin-left: 15px;
+}
+
+/* Knop voor bestand bijvoegen */
+.file-attach-button {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 24px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.file-attach-button:hover {
+  color: #fff;
+}
+
+.file-attach-button:disabled {
+  color: #555;
+  cursor: not-allowed;
+}
+
+/* Tekst input in chat */
+.input-form input[type="text"] {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  font-size: 16px;
+  padding: 10px 15px;
+  flex: 1;
+  border-radius: 20px;
+}
+
+/* Verzendknop in chat */
+.input-form button[type="submit"] {
+  border: none;
+  font-size: 16px;
+  padding: 10px 20px;
+  background-color: #005C4B;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+}
+
+.input-form button[type="submit"]:hover {
+  background-color: #004a3c;
+}
+
+.input-form button[type="submit"]:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+/* Input groepen (gewicht, lengte, streefgewicht) */
+.user-info-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+/* Pas basisbreedte aan voor 3 items */
+.user-info-inputs.triple-inputs .input-group {
+  flex-basis: 32%;
+}
+
+/* Dropdowns voor doel/focus (blijven 2 naast elkaar) */
+.user-info-inputs:not(.triple-inputs) .input-group {
+  flex-basis: 48%;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 48%;
+}
+
+.input-group label {
+  margin-bottom: 8px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.input-group input[type="number"] {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Remove arrows for number input (optional) */
+.input-group input[type="number"]::-webkit-outer-spin-button,
+.input-group input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input-group input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Dropdowns binnen .input-group */
+.input-group select {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23CCCCCC%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 10px auto;
+}
+
+.input-group select option {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Bodytype Selectie */
+.bodytype-selection {
+  margin-bottom: 25px;
+}
+
+.bodytype-selection > label {
+  display: block;
+  margin-bottom: 15px;
+  color: #ccc;
+  font-size: 14px;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.bodytype-options {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+  text-align: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.bodytype-option {
   display: flex;
   flex-direction: column;
   align-items: center;
+  cursor: pointer;
+}
+
+/* Verberg de standaard radio button */
+.bodytype-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.bodytype-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.bodytype-label img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  margin-bottom: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.bodytype-label span {
+  font-size: 14px;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Stijl wanneer radio button is geselecteerd */
+.bodytype-option input[type="radio"]:checked + .bodytype-label {
+  border-color: #005C4B;
+  background-color: rgba(0, 92, 75, 0.1);
+}
+
+.bodytype-option input[type="radio"]:focus + .bodytype-label {
+  outline: 2px solid #005C4B;
+}
+
+/* Start Chat Knop */
+.start-chat-button {
+  display: block;
+  width: 100%;
+  border: none;
+  font-size: 18px;
+  padding: 12px 20px;
+  background-color: #005C4B;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.start-chat-button:hover {
+  background-color: #004a3c;
+}
+
+/* Specifieke layout voor Tijdlijn/Focus rij */
+.user-info-inputs.dual-inputs {
+  justify-content: space-between;
+}
+.user-info-inputs.dual-inputs .input-group {
+  flex-basis: 48%;
+}
+
+/* Styling voor de slider groep */
+.slider-group label {
+  display: block;
+  margin-bottom: 10px;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.slider-group label span {
+  font-weight: bold;
+  color: #fff;
+  margin-left: 5px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: #555;
+  border-radius: 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Thumb (bolletje) styling - Webkit (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #005C4B;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Thumb (bolletje) styling - Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #005C4B;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+/* Labels onder de slider */
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+/* Styling voor Markdown elementen binnen AI berichten */
+.ai-message h2 {
+  font-size: 1.4em;
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-weight: bold;
+  border-bottom: 1px solid #555;
+  padding-bottom: 5px;
+}
+
+.ai-message h3 {
+  font-size: 1.2em;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.ai-message h4 {
+  font-size: 1.0em;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.ai-message ul {
+  list-style: disc;
+  margin: 0 0 10px 20px;
+  padding-left: 0;
+}
+
+.ai-message li {
+  margin-bottom: 5px;
+  line-height: 1.5;
+}
+
+.ai-message p {
+    margin: 0 0 10px 0;
+    line-height: 1.5;
+}
+
+/* Layout Container */
+.main-layout {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background-color: #111B21;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #333;
+  overflow-y: auto;
+  padding-bottom: 20px; /* Extra ruimte onderaan */
+}
+
+.sidebar-logo {
+  max-width: 40px;
+  margin: 10px auto 25px auto;
+}
+
+.new-chat-button {
+  background-color: #005C4B;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.new-chat-button:hover {
+  background-color: #004a3c;
+}
+
+.chat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.chat-list li {
+  padding: 12px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 5px;
+}
+
+/* Renamed from .chat-list li to target the specific list item class */
+.chat-list-item {
+  padding: 10px 10px;
+  border-radius: 5px;
+  cursor: default;
+  margin-bottom: 5px;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  display: flex; 
+  justify-content: space-between;
+  align-items: center; 
+}
+
+/* Area containing the chat title, make it clickable */
+.chat-title-area {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.chat-list-item:hover .chat-title-area {
+  
+}
+
+.chat-list-item.active .chat-title-area {
+  
+}
+
+.chat-actions {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.chat-list-item:hover .chat-actions {
+  opacity: 1;
+}
+
+.chat-action-button {
+  background: none;
+  border: none;
+  color: #aebac1;
+  padding: 3px;
+  margin-left: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  transition: background-color 0.1s ease, color 0.1s ease;
 }
 
-.App-link {
-  color: #61dafb;
+.chat-action-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.chat-action-button.delete-button:hover {
+  color: #ff4d4f;
+  background-color: rgba(255, 77, 79, 0.15);
+}
+
+.chat-list li:hover {
+  background-color: #2a2f34;
+}
+
+.chat-list li.active {
+  background-color: #2a2f34;
+}
+
+.chat-list li.no-chats {
+  color: #888;
+  text-align: center;
+  cursor: default;
+  font-style: italic;
+  display: block;
+}
+
+/* Hoofd Chat Gebied */
+.chat-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Wrapper binnen chat-area */
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    max-width: 900px; 
+    width: 100%;
+    margin: 0 auto;
+    overflow-y: auto;
+    padding: 20px 20px 120px 20px;
+}
+
+/* Info Formulier */
+.info-form-container {
+   max-width: 700px;
+   margin: auto;
+}
+
+/* Footer */
+.footer {
+   text-align: center;
+   padding: 10px 0;
+   margin-top: auto;
+}
+
+/* Upload sectie in sidebar */
+.document-upload-section {
+  margin-top: 15px; /* Ruimte boven upload sectie */
+  margin-bottom: 15px; /* Ruimte onder upload sectie */
+  border-top: 1px solid #333; /* Scheidingslijn */
+  border-bottom: 1px solid #333;
+  padding: 15px 0;
+}
+
+/* De label die als knop fungeert */
+.document-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #444; /* Andere kleur dan new chat */
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  transition: background-color 0.2s ease;
+}
+
+.document-upload-button:hover {
+  background-color: #555;
+}
+
+/* Stijl tijdens uploaden */
+.document-upload-button.uploading {
+  background-color: #555;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Statusbericht */
+.upload-status-message {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 8px;
+  text-align: center;
+  min-height: 16px; /* Voorkom layout shift */
 }
