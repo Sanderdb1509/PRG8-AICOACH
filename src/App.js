@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import ReactMarkdown from 'react-markdown';
 import AppLogo from './logo.png';
-import CGLogo from './apple.png';
 // Import placeholder images (vervang paden door je eigen afbeeldingen)
 import EctoImage from './images/ectomorph.png';
 import MesoImage from './images/mesomorph.png';
@@ -37,10 +36,9 @@ function App() {
   const [allChats, setAllChats] = useState(loadChatsFromLocalStorage()); // Lijst met alle chats
   const [currentChatId, setCurrentChatId] = useState(null); // ID van de actieve chat
 
-  // Huidige chat data (afgeleid van allChats en currentChatId)
+  // Huidige chat data
   const currentChat = allChats.find(chat => chat.id === currentChatId);
   const chatHistory = currentChat ? currentChat.history : [];
-  const userInfo = currentChat ? currentChat.userInfo : {};
 
   // Stap state (bepaalt of info form of chat getoond wordt)
   // Wordt nu bepaald door of er een currentChatId is
@@ -65,12 +63,10 @@ function App() {
 
   // --- Speech Recognition State ---
   const [isListening, setIsListening] = useState(false);
-  const [finalTranscript, setFinalTranscript] = useState('');
   const [interimTranscript, setInterimTranscript] = useState('');
   const recognitionRef = useRef(recognition); // Use ref to hold the recognition instance
 
   // --- State voor Document Upload ---
-  const [selectedDocFile, setSelectedDocFile] = useState(null);
   const [docUploadStatus, setDocUploadStatus] = useState(''); // Voor feedback
   const [isUploadingDoc, setIsUploadingDoc] = useState(false);
   const docFileInputRef = useRef(null); // Ref voor de document input
@@ -194,7 +190,6 @@ function App() {
   // --- Speech Recognition Logic ---
   useEffect(() => {
     if (!recognitionRef.current) return;
-
     const rec = recognitionRef.current;
 
     rec.onresult = (event) => {
@@ -207,26 +202,19 @@ function App() {
           interim += event.results[i][0].transcript;
         }
       }
-      setFinalTranscript(prev => prev + final); // Append final results
       setInterimTranscript(interim);
-      // Update main prompt immediately with final transcript part
       if (final) {
-         setPrompt(prevPrompt => prevPrompt + final); 
+         setPrompt(prevPrompt => prevPrompt + final);
       }
     };
-
     rec.onerror = (event) => {
       console.error('Speech recognition error:', event.error);
       setIsListening(false);
     };
-
     rec.onend = () => {
       setIsListening(false);
-      setInterimTranscript(''); // Clear interim when listening stops
-      setFinalTranscript(''); // Clear final transcript buffer
+      setInterimTranscript(''); 
     };
-
-    // Clean up listeners when component unmounts
     return () => {
         rec.onresult = null;
         rec.onerror = null;
@@ -235,7 +223,7 @@ function App() {
             rec.stop();
         }
     };
-  }, [isListening]); // Depend on isListening to manage cleanup
+  }, [isListening]);
 
   const toggleListening = () => {
     if (!recognitionRef.current) {
@@ -247,7 +235,6 @@ function App() {
       setIsListening(false);
     } else {
       setPrompt(''); // Clear prompt when starting new dictation
-      setFinalTranscript(''); // Clear final transcript buffer
       setInterimTranscript(''); // Clear interim transcript
       recognitionRef.current.start();
       setIsListening(true);
@@ -316,6 +303,7 @@ function App() {
             streamingContent += chunk;
             
             // Update the placeholder message content dynamically
+            // eslint-disable-next-line no-loop-func
             setAllChats(prevAllChats => prevAllChats.map(chat => {
                 if (chat.id === currentChatId) {
                     return {
@@ -366,14 +354,9 @@ function App() {
   // --- Document Upload Functie ---
   const handleDocumentFileChange = (event) => {
     if (event.target.files && event.target.files[0]) {
-      setSelectedDocFile(event.target.files[0]);
-      // Start upload direct na selectie
       uploadDocument(event.target.files[0]);
-    } else {
-        setSelectedDocFile(null);
     }
-     // Reset de input zodat dezelfde file opnieuw geselecteerd kan worden
-     if (docFileInputRef.current) {
+    if (docFileInputRef.current) {
         docFileInputRef.current.value = "";
      } 
   };
@@ -400,7 +383,6 @@ function App() {
         }
         
         setDocUploadStatus(responseText); // Toon succesbericht van server
-        setSelectedDocFile(null); // Reset selectie na succes
 
     } catch (error) {
         console.error("Fout bij uploaden document:", error);
